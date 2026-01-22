@@ -7,14 +7,13 @@ model = dict(
     type='RecognizerGCN',
     backbone=dict(
         type='STGCN',
-        graph_cfg=dict(layout='nturgb+d', mode='stgcn_spatial')),
+        graph_cfg=dict(layout='mediapipe', mode='stgcn_spatial')), # MODIFIED: layout='mediapipe'
     cls_head=dict(
         type='GCNHead',
-        num_classes=8,  # MODIFIED: Changed from 120 to your 8 classes
+        num_classes=2,  # MODIFIED: 2 Classes (Healthy vs LBP)
         in_channels=256))
 
 # --- Dataset Settings ---
-# ADDED: Your custom dataset settings
 dataset_type = 'PoseDataset'
 data_root = 'data/5xSTS'
 ann_file_train = f'{data_root}/train_annotations.pkl'

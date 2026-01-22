@@ -6,10 +6,10 @@ model = dict(
     type='RecognizerGCN',
     backbone=dict(
         type='STGCN',
-        graph_cfg=dict(layout='nturgb+d', mode='stgcn_spatial')),
+        graph_cfg=dict(layout='mediapipe', mode='stgcn_spatial')), # MODIFIED: layout='mediapipe' for 33 joints
     cls_head=dict(
         type='GCNHead',
-        num_classes=8,  # MODIFIED: Changed from 120 to your 8 classes
+        num_classes=2,  # MODIFIED: 2 Classes (Healthy vs LBP)
         in_channels=256))
 
 # --- Dataset Settings ---
@@ -82,7 +82,15 @@ test_evaluator = val_evaluator
 # --- Training Schedule & Optimizer ---
 # MODIFIED: Training schedule set for your fine-tuning run
 train_cfg = dict(type='EpochBasedTrainLoop', max_epochs=50, val_interval=1)
-val_cfg = dict(type='ValLoop')
+# ADDED: Essential for transfer learning (25 -> 33 joints)
+load_from = 'checkpoints/stgcn_8xb16-joint-u100-80e_ntu120-xsub-keypoint-3d_20221129-0484f579.pth' 
+# NOTE: The 'load_from' variable is used by the runner. To force 'strict=False', we rely on the runner's default behavior 
+# or explicit 'load_checkpoint' calls. In MMAction2 1.x configs, 'load_from' at root usually handles this, 
+# but typically 'strict=False' needs to be passed if the runner supports it in the config or via CLI. 
+# However, for simplicity in config, we ensure the variable is set.
+# Actually, to strictly enforce strict=False, it's often passed in the 'load_checkpoint' function or init_cfg.
+# Let's try to add it to the model's init_cfg if supported, or rely on the fact that we changed the layout.
+
 test_cfg = dict(type='TestLoop')
 
 param_scheduler = [

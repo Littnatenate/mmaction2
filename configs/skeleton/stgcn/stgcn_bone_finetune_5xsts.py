@@ -6,10 +6,10 @@ model = dict(
     type='RecognizerGCN',
     backbone=dict(
         type='STGCN',
-        graph_cfg=dict(layout='nturgb+d', mode='spatial')),
+        graph_cfg=dict(layout='mediapipe', mode='spatial')), # MODIFIED: layout='mediapipe'
     cls_head=dict(
         type='GCNHead',
-        num_classes=8,  # Your 8 classes
+        num_classes=2,  # MODIFIED: 2 Classes (Healthy vs LBP)
         in_channels=256))
 
 # --- Dataset Settings ---
